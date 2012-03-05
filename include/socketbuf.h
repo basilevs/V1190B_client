@@ -11,7 +11,7 @@ private:
 	Host _host;
 	int _port, _socket;
 	bool _noDelay;
-protected:
+public:
 	int socket() {return _socket;}
 	int read(char * oBuffer, int length);
 	int write(const char * iBuffer, int length);
@@ -22,7 +22,7 @@ public:
 	static std::string errorToString(Error);
 	socketwrapper(const Host & host, int port);
 	void setNoDelay(bool noDelay=true);
-	~socketwrapper();
+	virtual ~socketwrapper();
 	Error connect();
 	void disconnect();
 	bool isConnected() const;
@@ -110,7 +110,7 @@ private:
 		*current=traits_type::to_char_type(c); //We can write there as current is still not greater than _oBuffer+BUFFER_SIZE-1
 		return writeChars(_oBuffer-current+1);
 	}
-
+public:
 	int sync() {
 		int length=this->pptr() - _oBuffer;
 		if (length>0) {
