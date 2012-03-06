@@ -43,7 +43,7 @@ class socketbuf: public std::basic_streambuf<_CharT>, public socketwrapper {
 public:
 	socketbuf(const Host & host, int port):
 		socketwrapper(host, port) {
-		setg(_iBuffer, _iBuffer, _iBuffer+BUFFER_SIZE);
+		setg(_iBuffer, _iBuffer+BUFFER_SIZE, _iBuffer+BUFFER_SIZE);
 		setp(_oBuffer, _oBuffer+BUFFER_SIZE-1);
 	}
 	virtual ~socketbuf() {}
@@ -102,11 +102,7 @@ private:
 	}
 
 	int_type overflow(int_type c) {
-		char_type * begin=this->pbase(),* current=this->pptr(),* end=this->epptr();
-		assert(begin>=_oBuffer);
-		assert(end<=_oBuffer+BUFFER_SIZE-1);
-		assert(current>=begin);
-		assert(current<=end);
+		char_type * current=this->pptr();
 		*current=traits_type::to_char_type(c); //We can write there as current is still not greater than _oBuffer+BUFFER_SIZE-1
 		return writeChars(_oBuffer-current+1);
 	}

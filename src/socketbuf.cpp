@@ -15,6 +15,10 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
 //int fdescwrapper::read(char * oBuffer, int length) {
 //	if (_fd<0) {return 0;}
 //	return ::read(_fd, oBuffer, length);
@@ -169,10 +173,25 @@ socketwrapper::Error socketwrapper::connect() {
 	}
 	return UNKNOWN_CONNECT_ERROR;
 }
+inline void dump(ostream & str, char * data, int size, const string & title) {
+	return;
+	if (size < 0)  {
+		str << "Socket returned negative value" << endl;
+		return;
+	}
+	str << title << ":";
+	for (int i = 0; i < size; i++) 
+		str << hex << (unsigned(0xFF) & unsigned(data[i])) << " ";
+	str << dec;
+	str << endl;
+}
+
 
 int socketwrapper::read(char * oBuffer, int length) {
 	if (!isConnected()) return 0;
-	return ::read(socket(), oBuffer, length);
+	int rv = ::read(socket(), oBuffer, length);
+	dump(cerr, oBuffer, length, "low level read");
+	return rv;
 }
 
 int socketwrapper::write(const char * iBuffer, int length) {
