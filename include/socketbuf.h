@@ -103,10 +103,10 @@ private:
 
 	int_type overflow(int_type c) {
 		char_type * current=this->pptr();
+		assert(current < _oBuffer+BUFFER_SIZE);
 		*current=traits_type::to_char_type(c); //We can write there as current is still not greater than _oBuffer+BUFFER_SIZE-1
 		return writeChars(_oBuffer-current+1);
 	}
-public:
 	int sync() {
 		int length=this->pptr() - _oBuffer;
 		if (length>0) {
