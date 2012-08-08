@@ -1,5 +1,6 @@
 #include "V1190BClient.h"
 #include <iostream>
+#include <sstream>
 #include <assert.h>
 #include <getopt.h>
 #include <unistd.h>
@@ -37,18 +38,30 @@ int main(int argc, char* argv[]) {
 	const static TString defRootFileName("V1190B.root");
 	TString rootFileName = defRootFileName;
 	bool interactive = false;
-	
+	string host = "127.0.0.1";
+	int port = 1055;
 	int opt;
-	while ((opt = getopt(argc, argv, "iho:n:f:w:")) != -1) {
+	while ((opt = getopt(argc, argv, "iho:n:f:w:a:")) != -1) {
 		switch(opt) {
 		case 'o': rootFileName = optarg; break;
 		case 'i': interactive = true; break;
 		case 'n': events = atoi(optarg); break;
 		case 'f': offset = atoi(optarg); break;
 		case 'w': width = atoi(optarg); break;
+		case 'a':
+		{
+			istringstream address(optarg);
+			getline(address, host, ':') >> port;
+			if (address.fail()) {
+				cerr << " Failed to parse address " << optarg << endl;
+				return 7;
+			}
+
+		}
 		case 'h':
 		default: cerr <<
-			argv[0] << " builds a ROOT tree with raw times read from V1190B. Address to read from is 127.0.0.1:1055\n" <<
+			argv[0] << " builds a ROOT tree with raw times read from V1190B.\n"
+			" -a hostname:port - address to read from (default: " << host << ":" << port << ")\n" <<
 			" -i        - start an interactive shell after data collection\n" << 
 			" -n number - a number of events to collect. Default: 10000\n" << 
 			" -f number - sets a window offset in ticks\n" <<
@@ -60,7 +73,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	
-	V1190BClient client("192.168.1.2", 1055);
+	V1190BClient client(host.c_str(), port);
 	int rc;
 	if ((rc = client.connect()) != socketwrapper::OK ) {
 		cerr << "Failed to connect" << endl;
