@@ -94,9 +94,7 @@
 #ifndef ROOT_TGListTree
 #include "TGListTree.h"
 #endif
-#ifndef ROOT_TGuiBldGeometryFrame
-#include "TGuiBldGeometryFrame.h"
-#endif
+
 #ifndef ROOT_TGToolTip
 #include "TGToolTip.h"
 #endif
