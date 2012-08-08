@@ -127,7 +127,7 @@ void Gui::configure(const Settings & s) {
 	_port->SetIntNumber(s.port);
 	_offset->SetIntNumber(s.windowOffset);
 	_width->SetIntNumber(s.windowWidth);
-	_host->SetText(s.host.c_str(), false);
+	_host->SetText(s.host.c_str());
 	_runningAverage->SetOn(s.runningAverage, false);
 	_firstHit->SetOn(s.showOnlyFirstHit, false);
 	_subtractTrigger->SetOn(s.subtractTrigger, false);
