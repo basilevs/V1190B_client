@@ -43,12 +43,6 @@ CLEAN+=V1190BClient.o socketbuf.o libV1190B_client.a V1190BClient.cpp.d socketbu
 CLEAN+=online_spectrum.o online_spectrum.cpp.d online_spectrum
 online_spectrum: online_spectrum.o libV1190B_client.a
 	$(CC) -o $@ $^ $(LDFLAGS) `root-config --libs`
-
-	
-CLEAN+=watchChannel.o watchChannel.cpp.d watchChannel
-watchChannel: libV1190B_client.a $(addprefix, watchChannel/, gui.o  HistogramManager.o  main.o  rootdict.o  settings.o)
-	$(CC) -o $@ $^ $(LDFLAGS) `root-config --libs`
-	
 	
 CLEAN+=V1190B_client.o V1190B_client.cpp.d V1190B_client
 V1190B_client: V1190B_client.o libV1190B_client.a
