@@ -46,7 +46,7 @@ online_spectrum: online_spectrum.o libV1190B_client.a
 
 	
 CLEAN+=watchChannel.o watchChannel.cpp.d watchChannel
-watchChannel: watchChannel.o libV1190B_client.a
+watchChannel: libV1190B_client.a $(addprefix, watchChannel/, gui.o  HistogramManager.o  main.o  rootdict.o  settings.o)
 	$(CC) -o $@ $^ $(LDFLAGS) `root-config --libs`
 	
 	
