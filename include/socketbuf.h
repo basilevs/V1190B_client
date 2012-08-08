@@ -43,8 +43,8 @@ class socketbuf: public std::basic_streambuf<_CharT>, public socketwrapper {
 public:
 	socketbuf(const Host & host, int port):
 		socketwrapper(host, port) {
-		setg(_iBuffer, _iBuffer+BUFFER_SIZE, _iBuffer+BUFFER_SIZE);
-		setp(_oBuffer, _oBuffer+BUFFER_SIZE-1);
+		this->setg(_iBuffer, _iBuffer+BUFFER_SIZE, _iBuffer+BUFFER_SIZE);
+		this->setp(_oBuffer, _oBuffer+BUFFER_SIZE-1);
 	}
 	virtual ~socketbuf() {}
 
@@ -73,7 +73,7 @@ private:
 
 		int byteCount=read(_iBuffer+length, (BUFFER_SIZE-length)*sizeof(char_type));
 		if (byteCount<=0) return traits_type::eof();
-		setg(_iBuffer, _iBuffer, _iBuffer+byteCount+length);
+		this->setg(_iBuffer, _iBuffer, _iBuffer+byteCount+length);
 		return traits_type::to_int_type(_iBuffer[0]);
 	}
 
@@ -97,7 +97,7 @@ private:
 		int bytesLeft=current-_oBuffer-byteCount;
 		assert(bytesLeft < BUFFER_SIZE);
 		memmove(_oBuffer, _oBuffer+byteCount, bytesLeft);
-		setp(_oBuffer+bytesLeft, _oBuffer+BUFFER_SIZE-1);
+		this->setp(_oBuffer+bytesLeft, _oBuffer+BUFFER_SIZE-1);
 		return traits_type::to_int_type(lastWrittenCharacter);
 	}
 
