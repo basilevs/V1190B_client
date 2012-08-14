@@ -123,6 +123,7 @@ using namespace std;
 
 
 void Gui::configure(const Settings & s) {
+	_triggerChannel->SetIntNumber(s.triggerChannel);
 	_channel->SetIntNumber(s.channel);
 	_port->SetIntNumber(s.port);
 	_offset->SetIntNumber(s.windowOffset);
@@ -136,6 +137,7 @@ void Gui::configure(const Settings & s) {
 void Gui::ProcessSettings()
 {
 	Settings s;
+	s.triggerChannel = (unsigned) _triggerChannel->GetNumber();
 	s.channel = (unsigned)_channel->GetNumber();
 	s.host = _host->GetText();
 	s.port = (unsigned)_port->GetNumber();
@@ -213,6 +215,20 @@ Gui::Gui():
 	   // vertical frame
 	   TGVerticalFrame *fVerticalFrame717 = new TGVerticalFrame(fHorizontalFrame585,153,80,kVerticalFrame);
 	   fVerticalFrame717->SetName("fVerticalFrame717");
+
+	   // horizontal frame
+	   TGHorizontalFrame *fHorizontalFrame326 = new TGHorizontalFrame(fVerticalFrame717,153,24,kHorizontalFrame);
+	   fHorizontalFrame326->SetName("fHorizontalFrame326");
+	   TGLabel *fLabel1760 = new TGLabel(fHorizontalFrame326,"Trigger channel:");
+	   fLabel1760->SetTextJustify(36);
+	   fLabel1760->SetMargins(0,0,0,0);
+	   fLabel1760->SetWrapLength(-1);
+	   fHorizontalFrame326->AddFrame(fLabel1760, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+	   _triggerChannel = new TGNumberEntry(fHorizontalFrame326, (Double_t) 0,6,-1,(TGNumberFormat::EStyle) 5);
+	   _triggerChannel->SetName("trggerChannel");
+	   fHorizontalFrame326->AddFrame(_triggerChannel, new TGLayoutHints(kLHintsRight | kLHintsTop,2,2,2,2));
+
+	   fVerticalFrame717->AddFrame(fHorizontalFrame326, new TGLayoutHints(kLHintsLeft | kLHintsTop | kLHintsExpandX));
 
 	   // horizontal frame
 	   TGHorizontalFrame *fHorizontalFrame726 = new TGHorizontalFrame(fVerticalFrame717,153,24,kHorizontalFrame);
@@ -343,7 +359,7 @@ Gui::Gui():
 }
 
 void Gui::init() {
-	TGNumberEntry * numbers[] = {_channel, _port, _width, _offset};
+	TGNumberEntry * numbers[] = {_triggerChannel, _channel, _port, _width, _offset};
 	BOOST_FOREACH(TGNumberEntry * _entry, numbers) {
 		_entry->Connect("ValueSet(Long_t)", "Gui", this, "ProcessSettings()");
 	}

@@ -39,7 +39,7 @@ void * HistogramManager::threadFunc(void * arg) {
 		float trigger = -1;
 		if (This->_settings.subtractTrigger){
 			for (Measurements::const_iterator i=event.measurements.begin(); i!=event.measurements.end(); i++) {
-				if (i->gChannel()!=0) continue;
+				if (i->gChannel()!=This->_settings.triggerChannel) continue;
 				if (trigger >= 0) {
 					trigger = -1;
 					break;

@@ -10,6 +10,7 @@ Settings::Settings() {
 	windowWidth = 1;
 	subtractTrigger = true;
 	runningAverage = false;
+	triggerChannel = 0;
 }
 
 string Settings::check() const {

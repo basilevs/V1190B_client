@@ -22,6 +22,7 @@ class Gui: public TGMainFrame {
 	TTimer _timer;
 	TCanvas * _canvas;
 	TGNumberEntry * _channel;
+	TGNumberEntry * _triggerChannel;
 	TGNumberEntry * _port;
 	TGNumberEntry * _width;
 	TGNumberEntry * _offset;

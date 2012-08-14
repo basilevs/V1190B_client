@@ -7,6 +7,7 @@ struct Settings {
 	std::string host;
 	unsigned port;
 	bool showOnlyFirstHit;
+	unsigned triggerChannel;
 	unsigned channel;
 	unsigned windowWidth;
 	int windowOffset;
