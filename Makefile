@@ -8,7 +8,7 @@ VPATH+=$(V1190B_BASE)src $(INCLUDE)
 CC=g++
 CPPFLAGS+=`root-config --cflags` $(addprefix -I,$(INCLUDE))
 
-all: V1190B_client online_spectrum V1190B_hist
+all: online_spectrum V1190B_hist
 
 report:
 	@echo Makefile: $(V1190B_CLIENT_MAKEFILE)
@@ -43,11 +43,6 @@ CLEAN+=V1190BClient.o socketbuf.o libV1190B_client.a V1190BClient.cpp.d socketbu
 CLEAN+=online_spectrum.o online_spectrum.cpp.d online_spectrum
 online_spectrum: online_spectrum.o libV1190B_client.a
 	$(CC) -o $@ $^ $(LDFLAGS) `root-config --libs`
-	
-CLEAN+=V1190B_client.o V1190B_client.cpp.d V1190B_client
-V1190B_client: V1190B_client.o libV1190B_client.a
-	$(CC) -o $@ $^ $(LDFLAGS)
-
 
 CLEAN+=V1190B_hist.o V1190B_hist.cpp.d V1190B_hist
 V1190B_hist: V1190B_hist.o libV1190B_client.a
