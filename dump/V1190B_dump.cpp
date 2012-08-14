@@ -7,7 +7,7 @@
 using namespace std;
 
 int main() {
-	V1190BClient client("192.168.1.2", 1055);
+	V1190BClient client("127.0.0.1", 1055);
 	int rc;
 	if ((rc = client.connect()) != socketwrapper::OK ) {
 		cerr << "Failed to connect" << endl;
