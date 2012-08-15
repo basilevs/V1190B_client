@@ -6,9 +6,9 @@ INCLUDE=$(V1190B_BASE)include $(BASE)
 VPATH+=$(INCLUDE)
 
 CC=g++
-CPPFLAGS+=`root-config --cflags` $(addprefix -I,$(INCLUDE))
+CPPFLAGS+=$(addprefix -I,$(INCLUDE))
 
-all: V1190B_tree
+all: V1190B_dump
 
 report:
 	@echo Makefile: $(V1190B_CLIENT_MAKEFILE)
@@ -38,7 +38,7 @@ OBJECTS=$(addsuffix .o, $(UNITS))
 DEPS=$(addsuffix .cpp.d, $(UNITS))
 	
 V1190B_dump: $(OBJECTS) libV1190B_client.a 
-	$(CC) -o $@ $^ $(LDFLAGS) `root-config --libs` -lGui
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 .PHONY: Debug Release clean
 
@@ -48,4 +48,5 @@ endif
 
 clean:
 	$(MAKE) -f $(V1190B_BASE)Makefile clean
-	@rm -f $(DEPS) $(OBJECTS) rootdict.cpp rootdict.h watchChannel
+	rm -f $(OBJECTS)
+	rm V1190B_dump
