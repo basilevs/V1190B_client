@@ -9,7 +9,7 @@
 class HistogramManager {
 	Settings _settings;
 	V1190BClient _client;
-	TH1I _hist;
+	TH1F _hist;
 	volatile bool _interrupted;
 	TThread _thread;
 	static void * threadFunc(void *);
