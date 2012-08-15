@@ -33,6 +33,13 @@ void * HistogramManager::threadFunc(void * arg) {
 	while(true) {
 		if(This->_interrupted)
 			break;
+                if (This->_settings.runningAverage) {
+                                for (int i=1; i<=This->_hist.GetNbinsX(); i++) {
+	                                double temp=This->_hist.GetBinContent(i);
+                                         This->_hist.SetBinContent(i, temp*0.9997);
+                                       }
+                               }
+
 		if (!This->_client.readEvent(event))
 			break;
 		typedef V1190BClient::Event::Measurements Measurements;
@@ -55,7 +62,7 @@ void * HistogramManager::threadFunc(void * arg) {
 		vector<float> allTimes;
 		for (Measurements::const_iterator i=event.measurements.begin(); i!=event.measurements.end(); i++) {
 			if (i->gChannel() != (int) This->_settings.channel) continue;
-			allTimes.push_back(0.1 * i->time - trigger);
+			allTimes.push_back(double(0.1) * i->time - trigger);
 		}
 		if (This->_settings.showOnlyFirstHit) 	{
 			vector<float>::const_iterator i = min_element(allTimes.begin(), allTimes.end());
@@ -76,6 +83,7 @@ void HistogramManager::apply(const Settings & settings) {
 	try {
 		tryApply(settings);
 		_settings = settings;
+		_hist.Reset();
 	} catch (...) {
 		try {
 			tryApply(_settings);
@@ -112,11 +120,13 @@ void HistogramManager::tryApply(const Settings & settings)
 	::apply(settings, _client);
 	if (!_client)
 		throw runtime_error("Connection failed");
-	float binWidth = 0.1;
-	float margin = 50;
-	float histOffset = -margin;
-	float histWidth = settings.windowWidth * 25 - histOffset + margin; // ns
-	_hist.SetBins(int(histWidth/binWidth), histOffset, histOffset + histWidth);
+	double binWidth = 0.1;
+	double margin = 50;
+	double histOffset = -margin;
+	double histWidth = settings.windowWidth * 25 - histOffset + margin; // ns
+	int bins = int(histWidth/binWidth);
+	histWidth = bins * binWidth;
+	_hist.SetBins(bins, histOffset, histOffset + histWidth);
 	ostringstream title;
 	title << "Channel " << settings.channel;
 	_hist.SetTitle(title.str().c_str());
