@@ -30,7 +30,13 @@ void * HistogramManager::threadFunc(void * arg) {
 	assert(This);
 	V1190BClient::Event event;
 	cerr << "Readout thread started" << endl;
-	while(true) {
+	socketwrapper::Error rv = This->_client.connect(This->_settings.host.c_str(), This->_settings.port);
+	if (rv != socketwrapper::OK) {
+		cerr << socketwrapper::errorToString(rv) << endl;
+	}
+	TThread::Sleep(1);
+	::apply(This->_settings, This->_client);
+	while(This->_client) {
 		if(This->_interrupted)
 			break;
                 if (This->_settings.runningAverage) {
@@ -112,18 +118,10 @@ void HistogramManager::tryApply(const Settings & settings)
 	string checkResult =settings.check();
 	if (!checkResult.empty())
 		throw runtime_error(checkResult);
-	socketwrapper::Error rv = _client.connect(settings.host.c_str(), settings.port);
-	if (rv != socketwrapper::OK) {
-		throw runtime_error(socketwrapper::errorToString(rv));
-	}
-	TThread::Sleep(1);
-	::apply(settings, _client);
-	if (!_client)
-		throw runtime_error("Connection failed");
 	double binWidth = 0.1;
 	double margin = 10;
-	double histOffset = -margin - binWidth*0.5;
-	double histWidth = settings.windowWidth * 25 + 2.*margin; // ns
+	double histOffset = -margin - binWidth*0.5 - 25.*settings.windowOffset;
+	double histWidth = 25. * settings.windowWidth + 2. * margin; // ns
 	int bins = int(histWidth/binWidth);
 	histWidth = bins * binWidth;
 	_hist.SetBins(bins, histOffset, histOffset + histWidth);
