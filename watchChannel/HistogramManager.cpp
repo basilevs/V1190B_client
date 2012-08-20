@@ -121,9 +121,9 @@ void HistogramManager::tryApply(const Settings & settings)
 	if (!_client)
 		throw runtime_error("Connection failed");
 	double binWidth = 0.1;
-	double margin = 50;
-	double histOffset = -margin;
-	double histWidth = settings.windowWidth * 25 - histOffset + margin; // ns
+	double margin = 10;
+	double histOffset = -margin - binWidth*0.5;
+	double histWidth = settings.windowWidth * 25 + 2.*margin; // ns
 	int bins = int(histWidth/binWidth);
 	histWidth = bins * binWidth;
 	_hist.SetBins(bins, histOffset, histOffset + histWidth);
