@@ -120,7 +120,7 @@ void HistogramManager::tryApply(const Settings & settings)
 		throw runtime_error(checkResult);
 	double binWidth = 0.1;
 	double margin = 10;
-	double histOffset = -margin - binWidth*0.5 - 25.*settings.windowOffset;
+	double histOffset = -margin - binWidth*0.5 + 25.*settings.windowOffset;
 	double histWidth = 25. * settings.windowWidth + 2. * margin; // ns
 	int bins = int(histWidth/binWidth);
 	histWidth = bins * binWidth;
