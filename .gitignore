@@ -3,3 +3,7 @@ Debug
 rootdict.cpp
 rootdict.h
 *.root
+*.cpp.d
+*.o
+tree/V1190B_tree
+tree/libV1190B_client.a
