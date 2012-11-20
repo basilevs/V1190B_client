@@ -43,7 +43,7 @@ V1190B_dump: $(OBJECTS) libV1190B_client.a
 .PHONY: Debug Release clean
 
 ifeq "$(filter clean,$(MAKECMDGOALS))" ""
-	-include $(DEP)
+	-include $(DEPS)
 endif
 
 clean:

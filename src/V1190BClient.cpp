@@ -313,7 +313,7 @@ bool V1190BClient::convert(const RawEvent & iEvent, Event & oEvent) {
 				case 0: type=Error::HIT_LOST_READOUT; break;
 				case 1: type=Error::HIT_LOST_L1; break;
 				case 2: type=Error::HIT_ERROR; break;
-				default: assert(false);
+				default: assert(false); break;
 				}
 				oEvent.errors.push_back(Error(type, tdc, i/3));
 			}

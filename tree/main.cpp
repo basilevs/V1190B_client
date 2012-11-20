@@ -161,8 +161,8 @@ int main(int argc, char* argv[]) {
 				cerr << " Failed to parse address " << optarg << endl;
 				return 7;
 			}
-
 		}
+			break;
 		case 'h':
 		default: cerr <<
 			argv[0] << " builds a ROOT tree with raw times read from V1190B.\n"
