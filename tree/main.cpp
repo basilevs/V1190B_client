@@ -42,7 +42,7 @@ struct Runner {
 		_offset = -2;
 		_width = 10;
 		_rootFileName = "V1190B.root";
-		_host = "127.0.0.1";
+		_host = "192.168.1.2";
 		_port = 1055;
 	}
 	void collectInteractive() {

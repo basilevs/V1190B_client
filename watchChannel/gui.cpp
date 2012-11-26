@@ -34,12 +34,6 @@
 #ifndef ROOT_TGComboBox
 #include "TGComboBox.h"
 #endif
-#ifndef ROOT_TGuiBldHintsEditor
-#include "TGuiBldHintsEditor.h"
-#endif
-#ifndef ROOT_TGuiBldNameFrame
-#include "TGuiBldNameFrame.h"
-#endif
 #ifndef ROOT_TGFrame
 #include "TGFrame.h"
 #endif
@@ -58,9 +52,6 @@
 #ifndef ROOT_TGFSContainer
 #include "TGFSContainer.h"
 #endif
-#ifndef ROOT_TGuiBldEditor
-#include "TGuiBldEditor.h"
-#endif
 #ifndef ROOT_TGColorSelect
 #include "TGColorSelect.h"
 #endif
@@ -75,9 +66,6 @@
 #endif
 #ifndef ROOT_TGMsgBox
 #include "TGMsgBox.h"
-#endif
-#ifndef ROOT_TRootGuiBuilder
-#include "TRootGuiBuilder.h"
 #endif
 #ifndef ROOT_TGTab
 #include "TGTab.h"
@@ -107,9 +95,7 @@
 #ifndef ROOT_TCanvas
 #include "TCanvas.h"
 #endif
-#ifndef ROOT_TGuiBldDragManager
-#include "TGuiBldDragManager.h"
-#endif
+
 
 #include "gui.h"
 
@@ -368,7 +354,9 @@ void Gui::init() {
 	BOOST_FOREACH(TGCheckButton * _entry, checks) {
 		_entry->Connect("Toggled(Bool_t)", "Gui", this, "ProcessSettings()");
 	}
-	configure(_histogram.settings());
+	Settings settings = _histogram.settings();
+	settings.host = "192.168.1.2";
+	configure(settings);
 	_canvas->cd();
 	_histogram.histogram().Draw();
 	_timer.Connect("Timeout()", "Gui", this, "OnTimer()");

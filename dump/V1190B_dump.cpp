@@ -12,7 +12,7 @@ using namespace std;
 
 int main(int argc, char * argv[]) {
 	int offset = -2, width = 10, port = 1055;
-	string host = "127.0.0.1";
+	string host = "192.168.1.2";
 	int opt;
 	while ((opt = getopt(argc, argv, "f:w:a:h")) != -1) {
 		switch(opt) {
