@@ -2,8 +2,10 @@ WATCHCHANNEL_MAKEFILE:=$(abspath $(lastword $(MAKEFILE_LIST)))
 BASE:=$(dir $(WATCHCHANNEL_MAKEFILE))
 V1190B_BASE=$(BASE)../
 
-INCLUDE=$(V1190B_BASE)include $(BASE)
-VPATH+=$(INCLUDE)
+SOCKETBUF?=../../../common/socketbuf
+
+INCLUDE=$(V1190B_BASE)include $(BASE) $(SOCKETBUF)
+VPATH+=$(INCLUDE) $(SOCKETBUF)
 
 CC=g++
 CPPFLAGS+=`root-config --cflags` $(addprefix -I,$(INCLUDE))

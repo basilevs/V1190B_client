@@ -15,8 +15,10 @@ class V1190BClient {
 	typedef std::string string;
 	string _host;
 	int _port;
-	std::auto_ptr<socketbuf<char> > _streambuf;
+	std::auto_ptr<socketwrapper> _linuxsocket;
+	std::auto_ptr<socketbuf> _streambuf;
 	bool _started, _highSpeedCoreClock;
+	void checkConnection();
 public:
 	/** Constructor
 	 * @arg host - hostname or IP address of server
@@ -30,8 +32,8 @@ public:
 	/** Connects to a host and port given in constructor arguments
 	 * Use this before operator bool() if you want it to return truth.
 	 */
-	socketwrapper::Error connect();
-	socketwrapper::Error connect(const char * host, int port);
+	void connect();
+	void connect(const char * host, int port);
 	/** False if no more events can be read or no connection is established
 	 * This is the case, when something bad had happens on server side or connection is interrupted
 	 */
@@ -105,7 +107,7 @@ public:
 	void start();
 	void disconnect();
 private:
-	socketwrapper::Error sendCoreClock();
+	void sendCoreClock();
 	struct RawEvent;
 	bool readRawEvent(RawEvent & oEvent);
 	static bool convert(const RawEvent & iEvent, Event & oEvent);
