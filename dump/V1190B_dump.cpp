@@ -41,11 +41,7 @@ int main(int argc, char * argv[]) {
 	}
 
 	V1190BClient client(host.c_str(), port);
-	int rc;
-	if ((rc = client.connect()) != socketwrapper::OK ) {
-		cerr << "Failed to connect" << endl;
-		return 5;
-	}
+	client.connect();
 	V1190BClient::Event event;
 	client.setWindow(offset, width);
 	long prevEvent=-1;
