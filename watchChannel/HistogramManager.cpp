@@ -29,13 +29,12 @@ void * HistogramManager::threadFunc(void * arg) {
 	HistogramManager * This = static_cast<HistogramManager*>(arg);
 	assert(This);
 	V1190BClient::Event event;
-	cerr << "Readout thread started" << endl;
-	socketwrapper::Error rv = This->_client.connect(This->_settings.host.c_str(), This->_settings.port);
-	if (rv != socketwrapper::OK) {
-		cerr << socketwrapper::errorToString(rv) << endl;
-	}
+	try {
+		This->_client.disconnect();
+	This->_client.connect(This->_settings.host.c_str(), This->_settings.port);
 	TThread::Sleep(1);
 	::apply(This->_settings, This->_client);
+	cerr << "Readout thread started" << endl;
 	while(This->_client) {
 		if(This->_interrupted)
 			break;
@@ -82,6 +81,9 @@ void * HistogramManager::threadFunc(void * arg) {
 		}
 	}
 	cerr << "Readout thread stopped" << endl;
+}catch(exception & e) {
+	cerr << "Readout failed: "<< e.what() << endl;
+}
 	return 0;
 }
 

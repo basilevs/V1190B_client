@@ -14,7 +14,7 @@
 using namespace std;
 
 
-typedef socketbuf<char> SocketType;
+typedef socketbuf SocketType;
 
 enum {MAX_EVENT_LENGTH=2000};
 
@@ -39,35 +39,42 @@ V1190BClient::V1190BClient(const string & host, int port):
 void V1190BClient::disconnect() {
 	SocketType * socket = _streambuf.get();
 	if (!socket) return;
-	socket->disconnect();
+	_linuxsocket->disconnect();
 }
 
 V1190BClient::V1190BClient():
 	_started(false),
 	_highSpeedCoreClock(true)
-{}
+{
+}
 
 
 V1190BClient::operator bool() const {
 	SocketType * socket = _streambuf.get();
 	if (!socket) return false;
-	if (!socket->isConnected()) return false;
+	socketwrapper * wrapper = _linuxsocket.get();
+	if (!wrapper)
+		return false;
+	if (!wrapper->isConnected()) return false;
 	return true;
 }
 
+void V1190BClient::checkConnection() {
+	if (!(*this))
+		throw runtime_error("Not connected to V1190B.");
+}
 V1190BClient::~V1190BClient() {
 }
 
 void V1190BClient::setWindow(int offset, int width) {
-	if (connect() != socketwrapper::OK) return ;
+	checkConnection();
 	ostream ostr(_streambuf.get());
 	ostr << "window " << offset << " " << width << endl;
 	noop();
 }
 
 void V1190BClient::setDeadTime(int time) {
-	if (connect() != socketwrapper::OK)
-		return;
+	checkConnection();
 	unsigned mode = 0;
 	if (time <= 5) {
 		mode = 0;
@@ -84,8 +91,7 @@ void V1190BClient::setDeadTime(int time) {
 }
 
 void V1190BClient::setDllClock(unsigned mode) {
-	if (connect() != socketwrapper::OK)
-		return;
+	checkConnection();
 	assert(mode < 4);
 	if (mode >=4)
 		return;
@@ -96,6 +102,7 @@ void V1190BClient::setDllClock(unsigned mode) {
 
 
 void V1190BClient::start() {
+	checkConnection();	
 	if (_started)
 		return;
 	ostream ostr(_streambuf.get());
@@ -105,7 +112,7 @@ void V1190BClient::start() {
 }
 
 void V1190BClient::noop() {
-	if (connect() != socketwrapper::OK) return ;
+	checkConnection();
 	ostream ostr(_streambuf.get());
 	for (unsigned i = 0; i < 1; i++) {
 		ostr << "noop" << endl;
@@ -113,7 +120,7 @@ void V1190BClient::noop() {
 }
 
 void V1190BClient::clear() {
-	if (!connect()) return ;
+	checkConnection();
 	ostream ostr(_streambuf.get());
 	ostr << "clear"<< endl;
 }
@@ -123,48 +130,32 @@ void V1190BClient::lowSpeedCoreClock() {
 	sendCoreClock();
 }
 
-SocketType::Error V1190BClient::sendCoreClock() {
+void V1190BClient::sendCoreClock() {
+	checkConnection();
 	if (_highSpeedCoreClock)
-		return SocketType::OK;
-	SocketType::Error rc = connect();
-	if (rc != SocketType::OK)
-		return rc;
+		return;
 	ostream ostr(_streambuf.get());
 	ostr << "lowSpeedCoreClock" << endl;
-	return SocketType::OK;
 }
 
-SocketType::Error V1190BClient::connect(const char * host, int port) {
+void V1190BClient::connect(const char * host, int port) {
 	_streambuf.reset();
 	_host = host;
 	_port = port;
 	return connect();
 }
 
-SocketType::Error V1190BClient::connect() {
-	SocketType * socket= _streambuf.get();
-	if (!socket) {
-		socket = new SocketType(_host, _port);
-		assert(socket);
-		socket->setNoDelay(true);
-		_streambuf.reset(socket);
+void V1190BClient::connect() {
+	if (!(*this)) {
+		_streambuf.reset();
+		_linuxsocket.reset(socketwrapper::connect(_host, _port));
+		_streambuf.reset(new socketbuf(*_linuxsocket));
+		sendCoreClock();
 	}
-	if (!socket->isConnected()) {
-		socket->setNoDelay(true);
-		SocketType::Error rc=socket->connect();
-		_started = false;
-		if (rc != SocketType::OK) {
-			cerr << "Connection error: " <<  SocketType::errorToString(rc) << endl;
-			socket->disconnect();
-			return rc;
-		}
-		return sendCoreClock();
-	}
-	return SocketType::OK;
 }
 
 bool V1190BClient::readRawEvent(RawEvent & oEvent) {
-	if (connect() != socketwrapper::OK) return false;
+	checkConnection();
 	SocketType * socket=(SocketType *) _streambuf.get();
 	uint32_t netWord;
 	oEvent.clear();
@@ -189,7 +180,7 @@ bool V1190BClient::readRawEvent(RawEvent & oEvent) {
 			cerr << ("Event overflow") << endl;
 		}
 	}
-	socket->disconnect();
+	_linuxsocket->disconnect();
 	return false;
 }
 

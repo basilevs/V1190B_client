@@ -2,8 +2,10 @@ V1190B_CLIENT_MAKEFILE:=$(abspath $(lastword $(MAKEFILE_LIST)))
 
 V1190B_BASE=$(dir $(V1190B_CLIENT_MAKEFILE))
 
-INCLUDE=$(V1190B_BASE)include
-VPATH+=$(V1190B_BASE)src $(INCLUDE)
+SOCKETBUF?=$(V1190B_BASE)../../common/socketbuf
+
+INCLUDE=$(V1190B_BASE)include $(SOCKETBUF)
+VPATH+=$(V1190B_BASE)src $(INCLUDE) $(SOCKETBUF)
 
 CC=g++
 CPPFLAGS+=`root-config --cflags` $(addprefix -I,$(INCLUDE))

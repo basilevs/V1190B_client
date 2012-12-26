@@ -53,10 +53,7 @@ struct Runner {
 	int collect() {
 		V1190BClient client(_host.c_str(), _port);
 		int rc;
-		if ((rc = client.connect()) != socketwrapper::OK ) {
-			cerr << "Failed to connect" << endl;
-			return 5;
-		}
+		client.connect();
 		sleep(1);
 		V1190BClient::Event event;
 		client.setWindow(_offset, _width);

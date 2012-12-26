@@ -23,9 +23,7 @@ string Settings::check() const {
 
 void apply(const Settings & s, V1190BClient & client)
 {
-	int rc = client.connect(s.host.c_str(), s.port);
-	if (rc != socketwrapper::OK)
-		return;
+	client.connect(s.host.c_str(), s.port);
 	client.setWindow(s.windowOffset, s.windowWidth);
 }
 

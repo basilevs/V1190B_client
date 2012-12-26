@@ -90,13 +90,10 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	try {
 	V1190BClient client("192.168.1.2", 1055);
 
-	int rc;
-	if ((rc = client.connect()) != socketwrapper::OK ) {
-		cerr << "Failed to connect" << endl;
-		return 5;
-	}
+	client.connect();
 
 	sleep(1);
 	client.setWindow(offset, width);
@@ -160,5 +157,8 @@ int main(int argc, char* argv[]) {
 	if (interactive)
 		app.Run();
 
+	} catch (exception & e) {
+		cerr << "Exception: " << e.what() << endl;
+	}
 	return 0;
 }
